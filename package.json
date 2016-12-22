@@ -26,7 +26,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "ethereumjs-account": "^2.0.4",
-    "ipfs-block": "^0.5.3",
+    "ipfs-block": "^0.5.4",
     "merkle-patricia-tree": "^2.1.2"
   }
 }
