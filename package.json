@@ -20,7 +20,7 @@
   "dependencies": {
     "aegir": "^9.3.0",
     "async": "^2.1.4",
-    "ethereumjs-block": "^1.4.0",
+    "ethereumjs-block": "^1.4.1",
     "ipld-eth-trie": "^2.0.0",
     "ipld-eth-tx": "^1.0.0"
   },
