@@ -27,7 +27,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "ethereumjs-tx": "^1.2.0",
-    "ipfs-block": "^0.5.3",
+    "ipfs-block": "^0.5.5",
     "merkle-patricia-tree": "^2.1.2"
   },
   "directories": {
