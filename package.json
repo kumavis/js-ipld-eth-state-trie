@@ -19,7 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "aegir": "^9.3.0",
-    "async": "^2.1.4",
+    "async": "^2.1.5",
     "ethereumjs-block": "^1.4.0",
     "ipld-eth-trie": "^2.0.0",
     "ipld-eth-tx": "^1.0.0"
