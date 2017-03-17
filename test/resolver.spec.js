@@ -10,6 +10,8 @@ const Trie = require('merkle-patricia-tree')
 const isExternalLink = require('ipld-eth-trie/src/common').isExternalLink
 const ipldEthStateTrie = require('../src')
 const resolver = ipldEthStateTrie.resolver
+const multihashing = require('multihashing-async')
+const CID = require('cids')
 
 describe('IPLD format resolver (local)', () => {
   // setup test trie
@@ -25,8 +27,20 @@ describe('IPLD format resolver (local)', () => {
       (cb) => async.map(trieNodes, ipldEthStateTrie.util.serialize, cb)
     ], (err, result) => {
       if (err) return done(err)
-      dagNodes = result.map((serialized) => new IpfsBlock(serialized))
-      done()
+      async.map(result, (serialized, cb) => {
+        multihashing(serialized, 'sha2-256', (err, multihash) => {
+          if (err) {
+            return cb(err)
+          }
+          cb(null, new IpfsBlock(serialized, new CID(multihash)))
+        })
+      }, (err, res) => {
+        if (err) {
+          return done(err)
+        }
+        dagNodes = res
+        done()
+      })
     })
   })
 

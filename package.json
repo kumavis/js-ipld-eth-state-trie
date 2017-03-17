@@ -27,7 +27,8 @@
     "chai": "^3.5.0",
     "ethereumjs-tx": "^1.2.0",
     "ipfs-block": "^0.5.3",
-    "merkle-patricia-tree": "^2.1.2"
+    "merkle-patricia-tree": "^2.1.2",
+    "multihashing-async": "^0.4.4"
   },
   "directories": {
     "test": "test"
