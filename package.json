@@ -16,7 +16,6 @@
     "coverage-publish": "aegir-coverage publish"
   },
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "aegir": "^9.3.0",
     "async": "^2.1.4",
@@ -28,5 +27,16 @@
     "ethereumjs-account": "^2.0.4",
     "ipfs-block": "^0.5.3",
     "merkle-patricia-tree": "^2.1.2"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipld/js-ipld-eth-state-trie.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ipld/js-ipld-eth-state-trie/issues"
+  },
+  "homepage": "https://github.com/ipld/js-ipld-eth-state-trie#readme"
 }
