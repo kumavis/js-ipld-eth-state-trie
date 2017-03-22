@@ -9,6 +9,7 @@ const isExternalLink = require('ipld-eth-trie/src/common').isExternalLink
 const IpldEthTxResolver = require('ipld-eth-tx').resolver
 const IpfsBlock = require('ipfs-block')
 const CID = require('cids')
+const multihashing = require('multihashing-async')
 
 const trieIpldFormat = 'eth-tx-trie'
 
@@ -26,56 +27,78 @@ exports.resolver = {
 
 function resolve (block, path, callback) {
   waterfall([
-    (cb) => resolver.resolve(snapIpldFormat, block, path, cb),
+    (cb) => resolver.resolve(trieIpldFormat, block, path, cb),
     (result, cb) => {
       if (isExternalLink(result.value) || result.remainderPath.length === 0) {
         return callback(null, result)
       }
+
       // continue to resolve on node
-      const cid = new CID(1, trieIpldFormat, hash)
-      let block = new IpfsBlock(result.value, cid)
-      IpldEthTxResolver.resolve(block, result.remainderPath, callback)
+      toIpfsBlock(result.value, (err, block) => {
+        if (err) {
+          return cb(err)
+        }
+        IpldEthTxResolver.resolve(block, result.remainderPath, cb)
+      })
     }
   ], callback)
 }
 
 function tree (block, options, callback) {
   exports.util.deserialize(block.data, (err, trieNode) => {
-    if (err) return callback(err)
+    if (err) {
+      return callback(err)
+    }
+
     // leaf node
     if (trieNode.type === 'leaf') {
-      let block = new IpfsBlock(trieNode.getValue())
-      IpldEthTxResolver.tree(block, options, (err, paths) => {
-        if (err) return callback(err)
-        callback(null, paths)
-      })
-      return
+      return waterfall([
+        (cb) => toIpfsBlock(trieNode.getValue(), cb),
+        (block, cb) => IpldEthTxResolver.tree(block, options, cb)
+      ], callback)
     }
+
     // non-leaf node
-    resolver.treeFromObject(trieIpldFormat, trieNode, options, (err, result) => {
-      if (err) return callback(err)
-      let paths = []
-      each(result, (child, next) => {
-        if (Buffer.isBuffer(child.value)) {
+    waterfall([
+      (cb) => resolver.treeFromObject(trieIpldFormat, trieNode, options, cb),
+      (result, cb) => {
+        let paths = []
+        each(result, (child, next) => {
+          if (!Buffer.isBuffer(child.value)) {
+            // node is non-leaf - add as is
+            paths.push(child)
+            return next()
+          }
+
           // node is leaf - continue to tree
           let key = child.key
-          let block = new IpfsBlock(child.value)
-          IpldEthTxResolver.tree(block, options, (err, subpaths) => {
-            if (err) return next(err)
-            subpaths.forEach((path) => {
-              path.path = key + '/' + path.path
-            })
-            paths = paths.concat(subpaths)
-          })
-        } else {
-          // node is non-leaf - add as is
-          paths.push(child)
-          next()
-        }
-      }, (err) => {
-        if (err) return callback(err)
-        callback(null, paths)
-      })
-    })
+          waterfall([
+            (cb) => toIpfsBlock(child.value, cb),
+            (block, cb) => IpldEthTxResolver.tree(block, options, cb),
+            (subpaths, cb) => {
+              paths = paths.concat(subpaths.map((p) => {
+                p.path = key + '/' + p.path
+              }))
+              cb()
+            }
+          ], next)
+        }, (err) => {
+          if (err) {
+            return cb(err)
+          }
+          cb(null, paths)
+        })
+      }
+    ], callback)
+  })
+}
+
+function toIpfsBlock (value, callback) {
+  multihashing(value, 'keccak-256', (err, hash) => {
+    if (err) {
+      return callback(err)
+    }
+    const cid = new CID(1, trieIpldFormat, hash)
+    callback(null, new IpfsBlock(value, cid))
   })
 }
