@@ -22,7 +22,6 @@
     "ipfs-block": "^0.6.0",
     "ipld-eth-account-snapshot": "^1.0.1",
     "ipld-eth-trie": "^2.0.0",
-    "ipld-eth-tx": "^1.0.0",
     "multihashing-async": "~0.4.4"
   },
   "devDependencies": {

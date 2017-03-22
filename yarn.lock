@@ -1511,7 +1511,7 @@ cids@^0.3.4:
     multicodec "^0.1.3"
     multihashes "^0.3.1"
 
-cids@^0.4.2, cids@~0.4.1:
+cids@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/cids/-/cids-0.4.2.tgz#f1414e78fa466fe97a7ce9cd6c03892993bef307"
   dependencies:
@@ -3842,15 +3842,6 @@ ipld-eth-trie@^2.0.0:
     multihashes "^0.3.0"
     rlp "^2.0.0"
 
-ipld-eth-tx@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/ipld-eth-tx/-/ipld-eth-tx-1.0.1.tgz#7563a2586129edf79aa0a61bd7b9fad3032549c9"
-  dependencies:
-    async "^2.1.4"
-    cids "~0.4.1"
-    ethereumjs-tx "^1.2.5"
-    multihashes "~0.3.3"
-
 irregular-plurals@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/irregular-plurals/-/irregular-plurals-1.2.0.tgz#38f299834ba8c00c30be9c554e137269752ff3ac"
@@ -5052,7 +5043,7 @@ multicodec@^0.1.3, multicodec@~0.1.7:
   dependencies:
     varint "^5.0.0"
 
-multihashes@^0.3.0, multihashes@^0.3.1, multihashes@~0.3.3:
+multihashes@^0.3.0, multihashes@^0.3.1:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/multihashes/-/multihashes-0.3.3.tgz#18d74d8c2393af39aaf0ac8f4fd6d888d43f2f29"
   dependencies:
