@@ -1,7 +1,9 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
+const chai = require('chai')
+chai.use(require('dirty-chai'))
+const expect = chai.expect
 const async = require('async')
 const IpfsBlock = require('ipfs-block')
 const Account = require('ethereumjs-account')
@@ -89,7 +91,7 @@ describe('IPLD format resolver (local)', () => {
     it('root node resolves to branch', (done) => {
       let rootNode = dagNodes[0]
       resolver.resolve(rootNode, '0/0/0/c/0/a/0/0/codeHash', (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('c/0/a/0/0/codeHash')
         expect(isExternalLink(trieNode)).to.eql(true)
@@ -100,7 +102,7 @@ describe('IPLD format resolver (local)', () => {
     it('"c" branch node resolves down to account data', (done) => {
       let cBranchNode = dagNodes[4]
       resolver.resolve(cBranchNode, 'c/0/a/0/0/codeHash', (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('')
         expect(isExternalLink(trieNode)).to.eql(false)
@@ -115,7 +117,7 @@ describe('IPLD format resolver (local)', () => {
     it('"c" branch node lists account paths', (done) => {
       let cBranchNode = dagNodes[4]
       resolver.tree(cBranchNode, (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let childPaths = result.map(item => item.path)
         expect(childPaths.includes('balance')).to.eql(true)
         done()
