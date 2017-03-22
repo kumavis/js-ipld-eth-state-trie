@@ -15,18 +15,19 @@
     "coverage": "aegir-coverage",
     "coverage-publish": "aegir-coverage publish"
   },
-  "author": "",
+  "author": "kumavis",
   "dependencies": {
-    "aegir": "^9.3.0",
-    "async": "^2.1.4",
-    "ethereumjs-block": "^1.4.0",
+    "aegir": "^11.0.0",
+    "async": "^2.1.5",
+    "ethereumjs-block": "^1.5.0",
     "ipld-eth-trie": "^2.0.0",
     "ipld-eth-tx": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "ethereumjs-tx": "^1.2.0",
-    "ipfs-block": "^0.5.3",
+    "dirty-chai": "^1.2.2",
+    "ethereumjs-tx": "^1.2.5",
+    "ipfs-block": "^0.6.0",
     "merkle-patricia-tree": "^2.1.2",
     "multihashing-async": "^0.4.4"
   },

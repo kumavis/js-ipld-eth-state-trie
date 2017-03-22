@@ -30,4 +30,4 @@ Small note: If editing the README, please conform to the [standard-readme](https
 
 ## License
 
-[MIT](LICENSE) © 2016 Protocol Labs Inc.
+[MIT](LICENSE) © 2017 Protocol Labs Inc.

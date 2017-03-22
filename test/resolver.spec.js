@@ -1,7 +1,9 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
+const chai = require('chai')
+chai.use(require('dirty-chai'))
+const expect = chai.expect
 const async = require('async')
 const IpfsBlock = require('ipfs-block')
 const EthBlock = require('ethereumjs-block')
@@ -112,7 +114,7 @@ describe('IPLD format resolver (local)', () => {
     it('root node resolving first tx value', (done) => {
       let rootNode = dagNodes[0]
       resolver.resolve(rootNode, '8/0/value', (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('0/value')
         expect(isExternalLink(trieNode)).to.eql(true)
@@ -123,7 +125,7 @@ describe('IPLD format resolver (local)', () => {
     it('"8" branch node resolves down to tx value', (done) => {
       let branchNode = dagNodes[2]
       resolver.resolve(branchNode, '0/value', (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('')
         expect(isExternalLink(trieNode)).to.eql(false)
@@ -139,7 +141,7 @@ describe('IPLD format resolver (local)', () => {
     it('root has two children', (done) => {
       let rootNode = dagNodes[0]
       resolver.tree(rootNode, {}, (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         expect(result.length).to.eql(2)
         done()
       })
