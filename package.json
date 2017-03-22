@@ -41,5 +41,9 @@
   "bugs": {
     "url": "https://github.com/ipld/js-ipld-eth-state-trie/issues"
   },
-  "homepage": "https://github.com/ipld/js-ipld-eth-state-trie#readme"
+  "homepage": "https://github.com/ipld/js-ipld-eth-state-trie#readme",
+  "contributors": [
+    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+    "kumavis <aaron@kumavis.me>"
+  ]
 }
