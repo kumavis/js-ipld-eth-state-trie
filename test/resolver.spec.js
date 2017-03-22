@@ -1,13 +1,17 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
+const chai = require('chai')
+chai.use(require('dirty-chai'))
+const expect = chai.expect
 const async = require('async')
 const IpfsBlock = require('ipfs-block')
 const Account = require('ethereumjs-account')
 const Trie = require('merkle-patricia-tree')
 const TrieNode = require('merkle-patricia-tree/trieNode')
 const isExternalLink = require('ipld-eth-trie/src/common').isExternalLink
+const multihashing = require('multihashing-async')
+const CID = require('cids')
 const ipldEthStateTrie = require('../src')
 const resolver = ipldEthStateTrie.resolver
 
@@ -46,10 +50,20 @@ describe('IPLD format resolver (local)', () => {
       (cb) => prepareTestExternalAccount(cb),
       (cb) => populateTrie(trie, cb),
       (cb) => dumpTrieNonInlineNodes(trie, trieNodes, cb),
-      (cb) => async.map(trieNodes, ipldEthStateTrie.util.serialize, cb)
+      (cb) => async.map(trieNodes, ipldEthStateTrie.util.serialize, cb),
+      (nodes, cb) => async.map(nodes, (s, cb) => {
+        multihashing(s, 'keccak-256', (err, hash) => {
+          if (err) {
+            return cb(err)
+          }
+          cb(null, new IpfsBlock(s, new CID(1, resolver.multicodec, hash)))
+        })
+      }, cb)
     ], (err, result) => {
-      if (err) return done(err)
-      dagNodes = result.map((serialized) => new IpfsBlock(serialized))
+      if (err) {
+        return done(err)
+      }
+      dagNodes = result
       done()
     })
   })
@@ -77,7 +91,7 @@ describe('IPLD format resolver (local)', () => {
     it('root node resolves to branch', (done) => {
       let rootNode = dagNodes[0]
       resolver.resolve(rootNode, '0/0/0/c/0/a/0/0/codeHash', (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('c/0/a/0/0/codeHash')
         expect(isExternalLink(trieNode)).to.eql(true)
@@ -88,7 +102,7 @@ describe('IPLD format resolver (local)', () => {
     it('"c" branch node resolves down to account data', (done) => {
       let cBranchNode = dagNodes[4]
       resolver.resolve(cBranchNode, 'c/0/a/0/0/codeHash', (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('')
         expect(isExternalLink(trieNode)).to.eql(false)
@@ -103,7 +117,7 @@ describe('IPLD format resolver (local)', () => {
     it('"c" branch node lists account paths', (done) => {
       let cBranchNode = dagNodes[4]
       resolver.tree(cBranchNode, (err, result) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         let childPaths = result.map(item => item.path)
         expect(childPaths.includes('balance')).to.eql(true)
         done()
