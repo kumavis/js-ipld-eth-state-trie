@@ -30,11 +30,11 @@ describe('IPLD format resolver (local)', () => {
     ], (err, result) => {
       if (err) return done(err)
       async.map(result, (serialized, cb) => {
-        multihashing(serialized, 'sha2-256', (err, multihash) => {
+        multihashing(serialized, 'keccak-256', (err, multihash) => {
           if (err) {
             return cb(err)
           }
-          cb(null, new IpfsBlock(serialized, new CID(multihash)))
+          cb(null, new IpfsBlock(serialized, new CID(1, resolver.multicodec, multihash)))
         })
       }, (err, res) => {
         if (err) {
@@ -107,7 +107,7 @@ describe('IPLD format resolver (local)', () => {
   }
 
   it('multicodec is eth-tx-trie', () => {
-    expect(resolver.multicodec).to.equal('eth-tx-trie')
+    expect(resolver.multicodec).to.equal('eth-state-trie')
   })
 
   describe('resolver.resolve', () => {
@@ -125,6 +125,7 @@ describe('IPLD format resolver (local)', () => {
     it('"8" branch node resolves down to tx value', (done) => {
       let branchNode = dagNodes[2]
       resolver.resolve(branchNode, '0/value', (err, result) => {
+        console.log(err.stack)
         expect(err).to.not.exist()
         let trieNode = result.value
         expect(result.remainderPath).to.eql('')

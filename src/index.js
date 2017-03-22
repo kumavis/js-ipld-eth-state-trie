@@ -6,7 +6,7 @@ const waterfall = require('async/waterfall')
 const util = require('ipld-eth-trie/src/util.js')
 const resolver = require('ipld-eth-trie/src/resolver.js')
 const isExternalLink = require('ipld-eth-trie/src/common').isExternalLink
-const IpldEthTxResolver = require('ipld-eth-tx').resolver
+const IpldEthAccountSnapshotResolver = require('ipld-eth-account-snapshot').resolver
 const IpfsBlock = require('ipfs-block')
 const CID = require('cids')
 const multihashing = require('multihashing-async')
@@ -30,7 +30,7 @@ function resolve (block, path, callback) {
     (cb) => resolver.resolve(trieIpldFormat, block, path, cb),
     (result, cb) => {
       if (isExternalLink(result.value) || result.remainderPath.length === 0) {
-        return callback(null, result)
+        return cb(null, result)
       }
 
       // continue to resolve on node
@@ -38,7 +38,7 @@ function resolve (block, path, callback) {
         if (err) {
           return cb(err)
         }
-        IpldEthTxResolver.resolve(block, result.remainderPath, cb)
+        IpldEthAccountSnapshotResolver.resolve(block, result.remainderPath, cb)
       })
     }
   ], callback)
@@ -54,7 +54,7 @@ function tree (block, options, callback) {
     if (trieNode.type === 'leaf') {
       return waterfall([
         (cb) => toIpfsBlock(trieNode.getValue(), cb),
-        (block, cb) => IpldEthTxResolver.tree(block, options, cb)
+        (block, cb) => IpldEthAccountSnapshotResolver.tree(block, options, cb)
       ], callback)
     }
 
@@ -74,7 +74,7 @@ function tree (block, options, callback) {
           let key = child.key
           waterfall([
             (cb) => toIpfsBlock(child.value, cb),
-            (block, cb) => IpldEthTxResolver.tree(block, options, cb),
+            (block, cb) => IpldEthAccountSnapshotResolver.tree(block, options, cb),
             (subpaths, cb) => {
               paths = paths.concat(subpaths.map((p) => {
                 p.path = key + '/' + p.path
@@ -98,7 +98,7 @@ function toIpfsBlock (value, callback) {
     if (err) {
       return callback(err)
     }
-    const cid = new CID(1, trieIpldFormat, hash)
+    const cid = new CID(1, IpldEthAccountSnapshotResolver.multicodec, hash)
     callback(null, new IpfsBlock(value, cid))
   })
 }

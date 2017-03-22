@@ -19,10 +19,11 @@
   "dependencies": {
     "async": "^2.1.5",
     "ethereumjs-block": "^1.5.0",
-    "multihashing-async": "~0.4.4",
     "ipfs-block": "^0.6.0",
+    "ipld-eth-account-snapshot": "^1.0.1",
     "ipld-eth-trie": "^2.0.0",
-    "ipld-eth-tx": "^1.0.0"
+    "ipld-eth-tx": "^1.0.0",
+    "multihashing-async": "~0.4.4"
   },
   "devDependencies": {
     "aegir": "^11.0.0",
