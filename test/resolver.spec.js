@@ -119,7 +119,7 @@ describe('IPLD format resolver (local)', () => {
       resolver.tree(cBranchNode, (err, result) => {
         expect(err).to.not.exist()
         let childPaths = result.map(item => item.path)
-        expect(childPaths.includes('balance')).to.eql(true)
+        expect(childPaths).to.contain('balance')
         done()
       })
     })
