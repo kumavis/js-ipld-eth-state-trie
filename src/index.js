@@ -11,7 +11,7 @@ const IpfsBlock = require('ipfs-block')
 const CID = require('cids')
 const multihashing = require('multihashing-async')
 
-const trieIpldFormat = 'eth-tx-trie'
+const trieIpldFormat = 'eth-state-trie'
 
 exports.util = {
   deserialize: util.deserialize,
